@@ -8,15 +8,15 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
 
-QueuePanel::QueuePanel(QWidget* parent) : BasePanel("Fila", about_queue_pt(), parent){
+QueuePanel::QueuePanel(QWidget* parent) : BasePanel(tr("Fila"), about_queue_pt(), parent){
     set_kind("queue");
     build_controls(controls_bar);
 }
 
 void QueuePanel::build_controls(QHBoxLayout* bar){
-    enq_btn=new QPushButton("Enfileirar",this);
-    deq_btn=new QPushButton("Desenfileirar",this);
-    clear_btn=new QPushButton("Limpar",this);
+    enq_btn=new QPushButton(tr("Enfileirar"),this);
+    deq_btn=new QPushButton(tr("Desenfileirar"),this);
+    clear_btn=new QPushButton(tr("Limpar"),this);
     bar->addWidget(enq_btn);
     bar->addWidget(deq_btn);
     bar->addWidget(clear_btn);
@@ -58,7 +58,7 @@ void QueuePanel::on_enq(){
 
 void QueuePanel::on_deq(){
     if(data.isEmpty()) return;
-    set_status("deq → "+data.front());
+    set_status(tr("deq → ")+data.front());
     data.pop_front();
     redraw();
 }

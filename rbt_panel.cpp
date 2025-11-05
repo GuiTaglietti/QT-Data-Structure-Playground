@@ -1,22 +1,18 @@
-/** @author Guilherme Martinelli Taglietti
- *  @file   rbt_panel.cpp
- *  @brief  Red-Black Tree panel impl
- */
 #include "rbt_panel.h"
 #include "texts.h"
 #include <QGraphicsTextItem>
 
-RbtPanel::RbtPanel(QWidget* parent):BasePanel("Árvore Vermelho-Preto",about_rbt_pt(),parent){
+RbtPanel::RbtPanel(QWidget* parent):BasePanel(tr("Árvore Vermelho-Preto"),about_rbt_pt(),parent){
     set_kind("rbt");
     build_controls(controls_bar);
     connect(&anim_timer,&QTimer::timeout,this,&RbtPanel::on_anim_step);
 }
 
 void RbtPanel::build_controls(QHBoxLayout* bar){
-    insert_btn=new QPushButton("Inserir",this);
-    find_btn=new QPushButton("Buscar",this);
-    remove_btn=new QPushButton("Remover",this);
-    clear_btn=new QPushButton("Limpar",this);
+    insert_btn=new QPushButton(tr("Inserir"),this);
+    find_btn=new QPushButton(tr("Buscar"),this);
+    remove_btn=new QPushButton(tr("Remover"),this);
+    clear_btn=new QPushButton(tr("Limpar"),this);
     bar->addWidget(insert_btn);
     bar->addWidget(find_btn);
     bar->addWidget(remove_btn);
@@ -189,8 +185,14 @@ void RbtPanel::on_insert(){
 void RbtPanel::on_find(){
     QString v=input_value->text().trimmed(); if(v.isEmpty()) return;
     anim_nodes.clear();
-    if(find_rec(root,v,&anim_nodes)){anim_index=0; anim_timer.start(260);}
-    else set_status("Não encontrado");
+    bool ok=find_rec(root,v,&anim_nodes);
+    anim_index=0;
+    anim_pending=true;
+    QStringList seq; for(auto* n:anim_nodes) seq<<n->v;
+    QString pathText=seq.join(" -> ");
+    if(ok) anim_pending_msg=tr("Caminho: %1").arg(pathText);
+    else anim_pending_msg=tr("Não encontrado") + QString(" — ") + tr("Caminho: %1").arg(pathText);
+    anim_timer.start(260);
 }
 
 void RbtPanel::on_remove(){
@@ -206,6 +208,12 @@ void RbtPanel::on_clear(){
 }
 
 void RbtPanel::on_anim_step(){
-    if(anim_index>=anim_nodes.size()){anim_timer.stop(); redraw(); return;}
-    redraw(anim_nodes[anim_index]); anim_index++;
+    if(anim_index>=anim_nodes.size()){
+        anim_timer.stop();
+        redraw();
+        if(anim_pending){ set_status(anim_pending_msg); anim_pending=false; anim_pending_msg.clear(); }
+        return;
+    }
+    redraw(anim_nodes[anim_index]);
+    anim_index++;
 }

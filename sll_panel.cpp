@@ -6,16 +6,16 @@
 #include "texts.h"
 #include <QGraphicsTextItem>
 
-SllPanel::SllPanel(QWidget* parent):BasePanel("Lista Encadeada",about_sll_pt(),parent){
+SllPanel::SllPanel(QWidget* parent):BasePanel(tr("Lista Encadeada"),about_sll_pt(),parent){
     set_kind("sll");
     build_controls(controls_bar);
 }
 
 void SllPanel::build_controls(QHBoxLayout* bar){
-    push_front_btn=new QPushButton("Inserir Início",this);
-    pop_front_btn=new QPushButton("Remover Início",this);
-    remove_sel_btn=new QPushButton("Remover Selecionado",this);
-    clear_btn=new QPushButton("Limpar",this);
+    push_front_btn=new QPushButton(tr("Inserir Início"),this);
+    pop_front_btn=new QPushButton(tr("Remover Início"),this);
+    remove_sel_btn=new QPushButton(tr("Remover Selecionado"),this);
+    clear_btn=new QPushButton(tr("Limpar"),this);
     bar->addWidget(push_front_btn);
     bar->addWidget(pop_front_btn);
     bar->addWidget(remove_sel_btn);
@@ -72,14 +72,14 @@ void SllPanel::on_push_front(){
 
 void SllPanel::on_pop_front(){
     if(data.isEmpty()) return;
-    set_status("pop_front → "+data.front());
+    set_status(tr("pop_front → %1").arg(data.front()));
     data.pop_front();
     redraw();
 }
 
 void SllPanel::on_remove_sel(){
     if(selected_index<0||selected_index>=data.size()) return;
-    set_status("remove_at → "+QString::number(selected_index));
+    set_status(tr("remove_at → %1").arg(QString::number(selected_index)));
     data.removeAt(selected_index);
     redraw();
 }

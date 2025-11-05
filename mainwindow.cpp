@@ -80,14 +80,14 @@ MainWindow::MainWindow(QWidget* parent):QMainWindow(parent),ui(new Ui::MainWindo
     ui->setupUi(this);
 
     tabs=new QTabWidget(this);
-    tabs->addTab(make_stack(),"Pilha");
-    tabs->addTab(make_queue(),"Fila");
-    tabs->addTab(make_hash(),"Tabela Hash");
-    tabs->addTab(make_sll(),"Lista Encadeada");
-    tabs->addTab(make_dll(),"Lista Duplamente Encadeada");
-    tabs->addTab(make_graph(),"Grafo");
-    tabs->addTab(make_bst(),"Árvore BST");
-    tabs->addTab(make_rbt(),"Árvore Vermelho-Preto");
+    tabs->addTab(make_stack(),tr("Pilha"));
+    tabs->addTab(make_queue(),tr("Fila"));
+    tabs->addTab(make_hash(),tr("Tabela Hash"));
+    tabs->addTab(make_sll(),tr("Lista Encadeada"));
+    tabs->addTab(make_dll(),tr("Lista Duplamente Encadeada"));
+    tabs->addTab(make_graph(),tr("Grafo"));
+    tabs->addTab(make_bst(),tr("Árvore BST"));
+    tabs->addTab(make_rbt(),tr("Árvore Vermelho-Preto"));
     setCentralWidget(tabs);
     tabs->tabBar()->hide();
 
@@ -95,13 +95,13 @@ MainWindow::MainWindow(QWidget* parent):QMainWindow(parent),ui(new Ui::MainWindo
     auto* hl=new QHBoxLayout(topbar);
     hl->setContentsMargins(12,6,12,6);
 
-    auto* title=new QLabel("QT DSA Playground",topbar);
+    auto* title=new QLabel(tr("QT DSA Playground"),topbar);
     QFont f=title->font(); f.setPointSizeF(f.pointSizeF()+1.5); f.setBold(true); title->setFont(f);
 
-    pick_btn=new QPushButton("Escolher Estrutura",topbar);
-    about_btn=new QPushButton("Sobre o Projeto",topbar);
+    pick_btn=new QPushButton(tr("Escolher Estrutura"),topbar);
+    about_btn=new QPushButton(tr("Sobre o Projeto"),topbar);
     theme_btn=new QPushButton(topbar);
-    theme_btn->setToolTip("Alternar tema (Ctrl+T)");
+    theme_btn->setToolTip(tr("Alternar tema (Ctrl+T)"));
 
     hl->addWidget(title);
     hl->addStretch();
@@ -124,7 +124,7 @@ MainWindow::MainWindow(QWidget* parent):QMainWindow(parent),ui(new Ui::MainWindo
     addAction(act_toggle);
     connect(act_toggle,&QAction::triggered,this,&MainWindow::on_toggle_theme);
 
-    setWindowTitle("QT DSA Playground");
+    setWindowTitle(tr("QT DSA Playground"));
     resize(1160,760);
     apply_theme();
 }
@@ -156,7 +156,7 @@ void MainWindow::on_toggle_theme(){
 
 void MainWindow::on_pick_structure(){
     QDialog d(this);
-    d.setWindowTitle("Escolha a Estrutura");
+    d.setWindowTitle(tr("Escolha a Estrutura"));
     auto* vl=new QVBoxLayout(&d);
 
     auto make_group=[&](const QString& title,const QList<QPair<QString,int>>& items){
@@ -174,21 +174,21 @@ void MainWindow::on_pick_structure(){
         vl->addWidget(gb);
     };
 
-    make_group("Listas e Sequências",{{"Pilha",0},{"Fila",1},{"Lista Encadeada",3},{"Lista Duplamente Encadeada",4}});
-    make_group("Mapeamentos",{{"Tabela Hash",2}});
-    make_group("Grafos",{{"Grafo",5}});
-    make_group("Árvores",{{"Árvore BST",6},{"Árvore Vermelho-Preto",7}});
+    make_group(tr("Listas e Sequências"),{{tr("Pilha"),0},{tr("Fila"),1},{tr("Lista Encadeada"),3},{tr("Lista Duplamente Encadeada"),4}});
+    make_group(tr("Mapeamentos"),{{tr("Tabela Hash"),2}});
+    make_group(tr("Grafos"),{{tr("Grafo"),5}});
+    make_group(tr("Árvores"),{{tr("Árvore BST"),6},{tr("Árvore Vermelho-Preto"),7}});
 
     d.exec();
 }
 
 void MainWindow::on_about_project(){
     QString t=
-        "Autor: Guilherme Martinelli Taglietti\n"
-        "Projeto: QT DSA Playground\n\n"
-        "Objetivo: auxiliar a compreensão e o estudo de estruturas de dados com visualizações em tempo real,"
-        " animações e exportação de exemplos. Este projeto continuará evoluindo com foco educacional e de pesquisa.\n\n"
-        "Origem: inicialmente desenvolvido como trabalho final da disciplina de Laboratório de Programação III"
-        " do curso de Ciência da Computação.";
-    QMessageBox::information(this,"Sobre o Projeto",t);
+        tr("Autor: Guilherme Martinelli Taglietti\n"
+           "Projeto: QT DSA Playground\n\n"
+           "Objetivo: auxiliar a compreensão e o estudo de estruturas de dados com visualizações em tempo real,"
+           " animações e exportação de exemplos. Este projeto continuará evoluindo com foco educacional e de pesquisa.\n\n"
+           "Origem: inicialmente desenvolvido como trabalho final da disciplina de Laboratório de Programação III"
+           " do curso de Ciência da Computação.");
+    QMessageBox::information(this,tr("Sobre o Projeto"),t);
 }

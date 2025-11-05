@@ -39,35 +39,35 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* e){setCursor(Qt::OpenHandCursor); QGraphicsEllipseItem::mouseReleaseEvent(e);}
 };
 
-GraphPanel::GraphPanel(QWidget* parent):BasePanel("Grafo",about_graph_pt(),parent),anim_index(0),manual_layout(false){
+GraphPanel::GraphPanel(QWidget* parent):BasePanel(tr("Grafo"),about_graph_pt(),parent),anim_index(0),manual_layout(false){
     set_kind("graph");
     build_controls(controls_bar);
     connect(&anim_timer,&QTimer::timeout,this,&GraphPanel::on_anim_step);
 }
 
 void GraphPanel::build_controls(QHBoxLayout* bar){
-    input_label=new QLineEdit(this); input_label->setPlaceholderText("Nó");
-    input_u=new QLineEdit(this); input_u->setPlaceholderText("u");
-    input_v=new QLineEdit(this); input_v->setPlaceholderText("v");
+    input_label=new QLineEdit(this); input_label->setPlaceholderText(tr("Nó"));
+    input_u=new QLineEdit(this); input_u->setPlaceholderText(tr("u"));
+    input_v=new QLineEdit(this); input_v->setPlaceholderText(tr("v"));
 
     start_combo=new QComboBox(this);
 
-    add_node_btn=new QPushButton("Adicionar Nó",this);
-    add_edge_btn=new QPushButton("Adicionar Aresta",this);
-    remove_node_btn=new QPushButton("Remover Nó",this);
-    remove_edge_btn=new QPushButton("Remover Aresta",this);
-    bfs_btn=new QPushButton("BFS",this);
-    dfs_btn=new QPushButton("DFS",this);
-    clear_btn=new QPushButton("Limpar",this);
+    add_node_btn=new QPushButton(tr("Adicionar Nó"),this);
+    add_edge_btn=new QPushButton(tr("Adicionar Aresta"),this);
+    remove_node_btn=new QPushButton(tr("Remover Nó"),this);
+    remove_edge_btn=new QPushButton(tr("Remover Aresta"),this);
+    bfs_btn=new QPushButton(tr("BFS"),this);
+    dfs_btn=new QPushButton(tr("DFS"),this);
+    clear_btn=new QPushButton(tr("Limpar"),this);
 
-    bar->addWidget(new QLabel("Valor:",this)); bar->addWidget(input_label); bar->addWidget(add_node_btn);
+    bar->addWidget(new QLabel(tr("Valor:"),this)); bar->addWidget(input_label); bar->addWidget(add_node_btn);
     bar->addSpacing(10);
-    bar->addWidget(new QLabel("u:",this)); bar->addWidget(input_u);
-    bar->addWidget(new QLabel("v:",this)); bar->addWidget(input_v);
+    bar->addWidget(new QLabel(tr("u:"),this)); bar->addWidget(input_u);
+    bar->addWidget(new QLabel(tr("v:"),this)); bar->addWidget(input_v);
     bar->addWidget(add_edge_btn);
     bar->addWidget(remove_edge_btn);
     bar->addSpacing(10);
-    bar->addWidget(new QLabel("Partida:",this)); bar->addWidget(start_combo);
+    bar->addWidget(new QLabel(tr("Partida:"),this)); bar->addWidget(start_combo);
     bar->addWidget(bfs_btn); bar->addWidget(dfs_btn);
     bar->addWidget(remove_node_btn);
     bar->addWidget(clear_btn);
@@ -234,20 +234,20 @@ void GraphPanel::dfs(int s,QSet<int>& vis,QList<int>& order){
 void GraphPanel::start_anim(const QList<int>& ord,const QString& title){
     anim_order=ord.toVector();
     anim_index=0;
-    set_status(title+": "+[&](){QString s; for(int i=0;i<ord.size();++i){if(i) s+=" "; s+=nodes[ord[i]].label;} return s;}());
+    set_status(title+": "+[&](){QString s; for(int i=0;i<ord.size();++i){if(i) s+=QString(" "); s+=nodes[ord[i]].label;} return s;}());
     anim_timer.stop(); anim_timer.start(350);
 }
 
 void GraphPanel::on_bfs(){
     if(nodes.isEmpty()) return;
     int s=start_combo->currentIndex(); if(s<0) s=0;
-    QList<int> ord; bfs(s,ord); start_anim(ord,"BFS");
+    QList<int> ord; bfs(s,ord); start_anim(ord,tr("BFS"));
 }
 
 void GraphPanel::on_dfs(){
     if(nodes.isEmpty()) return;
     int s=start_combo->currentIndex(); if(s<0) s=0;
-    QSet<int> vis; QList<int> ord; dfs(s,vis,ord); start_anim(ord,"DFS");
+    QSet<int> vis; QList<int> ord; dfs(s,vis,ord); start_anim(ord,tr("DFS"));
 }
 
 void GraphPanel::on_clear(){
@@ -259,9 +259,8 @@ void GraphPanel::on_clear(){
     manual_layout=false;
     refresh_combos();
     view->clear_scene();
-    set_status("Grafo limpo");
+    set_status(tr("Grafo limpo"));
 }
-
 
 void GraphPanel::on_anim_step(){
     if(anim_index>=anim_order.size()){anim_timer.stop(); ensure_items(); return;}

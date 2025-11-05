@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="/i18n">
+    <file alias="app_pt_BR.qm">../i18n/app_pt_BR.qm</file>
+    <file alias="app_en_US.qm">../i18n/app_en_US.qm</file>
+    <file alias="app_es_ES.qm">../i18n/app_es_ES.qm</file>
+  </qresource>
+</RCC>
+

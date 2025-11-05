@@ -1,12 +1,8 @@
-/** @author Guilherme Martinelli Taglietti
- *  @file   bst_panel.cpp
- *  @brief  BST panel impl
- */
 #include "bst_panel.h"
 #include "texts.h"
 #include <QGraphicsTextItem>
 
-BstPanel::BstPanel(QWidget* parent) : BasePanel("Árvore BST",about_bst_pt(),parent){
+BstPanel::BstPanel(QWidget* parent) : BasePanel(tr("Árvore BST"),about_bst_pt(),parent){
     set_kind("bst");
     build_controls(controls_bar);
     connect(&anim_timer,&QTimer::timeout,this,&BstPanel::on_anim_step);
@@ -19,10 +15,10 @@ static void draw_edge(QGraphicsScene* sc,const QPointF& a,const QPointF& b,int r
 }
 
 void BstPanel::build_controls(QHBoxLayout* bar){
-    insert_btn=new QPushButton("Inserir",this);
-    find_btn=new QPushButton("Buscar",this);
-    remove_btn=new QPushButton("Remover",this);
-    clear_btn=new QPushButton("Limpar",this);
+    insert_btn=new QPushButton(tr("Inserir"),this);
+    find_btn=new QPushButton(tr("Buscar"),this);
+    remove_btn=new QPushButton(tr("Remover"),this);
+    clear_btn=new QPushButton(tr("Limpar"),this);
     bar->addWidget(insert_btn);
     bar->addWidget(find_btn);
     bar->addWidget(remove_btn);
@@ -64,31 +60,61 @@ void BstPanel::redraw(Node* flash){
     view->auto_layout_now();
 }
 
+int BstPanel::bst_compare(const QString& a,const QString& b){
+    bool okA=false, okB=false;
+    qlonglong ia=a.toLongLong(&okA);
+    qlonglong ib=b.toLongLong(&okB);
+    if(okA && okB){
+        if(ia<ib) return -1;
+        if(ia>ib) return 1;
+        return 0;
+    }
+    if(a<b) return -1;
+    if(a>b) return 1;
+    return 0;
+}
+
 BstPanel::Node* BstPanel::insert_rec(Node* n,const QString& v){
     if(!n) return new Node{v,nullptr,nullptr};
-    if(v<n->v) n->l=insert_rec(n->l,v);
-    else if(v>n->v) n->r=insert_rec(n->r,v);
+    int c=bst_compare(v,n->v);
+    if(c<0) n->l=insert_rec(n->l,v);
+    else if(c>0) n->r=insert_rec(n->r,v);
     return n;
 }
 
-bool BstPanel::find_rec(Node* n,const QString& v,QVector<Node*>* path){
-    if(!n) return false;
-    if(path) path->push_back(n);
-    if(v==n->v) return true;
-    return v<n->v? find_rec(n->l,v,path):find_rec(n->r,v,path);
+bool BstPanel::find_with_path(Node* n,const QString& v,QVector<Node*>* path){
+    Node* cur=n;
+    while(cur){
+        if(path) path->push_back(cur);
+        int c=bst_compare(v,cur->v);
+        if(c==0) return true;
+        cur = (c<0)? cur->l : cur->r;
+    }
+    return false;
 }
 
 BstPanel::Node* BstPanel::min_node(Node* n){
-    while(n&&n->l) n=n->l; return n;
+    while(n && n->l) n=n->l;
+    return n;
 }
 
 BstPanel::Node* BstPanel::remove_rec(Node* n,const QString& v){
     if(!n) return n;
-    if(v<n->v) n->l=remove_rec(n->l,v);
-    else if(v>n->v) n->r=remove_rec(n->r,v);
+
+    int c=bst_compare(v,n->v);
+
+    if(c<0) n->l=remove_rec(n->l,v);
+    else if(c>0) n->r=remove_rec(n->r,v);
     else{
-        if(!n->l){auto* r=n->r; delete n; return r;}
-        else if(!n->r){auto* l=n->l; delete n; return l;}
+        if(!n->l){
+            auto* r=n->r;
+            delete n;
+            return r;
+        }else if(!n->r){
+            auto* l=n->l;
+            delete n;
+            return l;
+        }
         Node* m=min_node(n->r);
         n->v=m->v;
         n->r=remove_rec(n->r,m->v);
@@ -110,7 +136,10 @@ QJsonObject BstPanel::capture() const{
 
 void BstPanel::restore(const QJsonObject& o){
     clear_all(root); root=nullptr;
-    for(auto v:o.value("bst_pre").toArray()) root=insert_rec(root,v.toString());
+    for(auto v:o.value("bst_pre").toArray()){
+        const QString s=v.toString();
+        root=insert_rec(root,s);
+    }
     redraw();
 }
 
@@ -121,14 +150,21 @@ void BstPanel::clear_all(Node* n){
 
 void BstPanel::on_insert(){
     QString v=input_value->text().trimmed(); if(v.isEmpty()) return;
-    root=insert_rec(root,v); redraw();
+    root=insert_rec(root,v);
+    redraw();
 }
 
 void BstPanel::on_find(){
     QString v=input_value->text().trimmed(); if(v.isEmpty()) return;
     anim_path.clear();
-    if(find_rec(root,v,&anim_path)){anim_i=0; anim_timer.start(260);}
-    else set_status("Não encontrado");
+    bool ok=find_with_path(root,v,&anim_path);
+    anim_i=0;
+    anim_pending=true;
+    QStringList seq; for(auto* n:anim_path) seq<<n->v;
+    QString pathText=seq.join(" -> ");
+    if(ok) anim_pending_msg=tr("Caminho: %1").arg(pathText);
+    else anim_pending_msg=tr("Não encontrado") + QString(" — ") + tr("Caminho: %1").arg(pathText);
+    anim_timer.start(260);
 }
 
 void BstPanel::on_remove(){
@@ -141,6 +177,12 @@ void BstPanel::on_clear(){
 }
 
 void BstPanel::on_anim_step(){
-    if(anim_i>=anim_path.size()){anim_timer.stop(); redraw(); return;}
-    redraw(anim_path[anim_i]); anim_i++;
+    if(anim_i>=anim_path.size()){
+        anim_timer.stop();
+        redraw();
+        if(anim_pending){ set_status(anim_pending_msg); anim_pending=false; anim_pending_msg.clear(); }
+        return;
+    }
+    redraw(anim_path[anim_i]);
+    anim_i++;
 }

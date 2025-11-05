@@ -8,15 +8,15 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
 
-StackPanel::StackPanel(QWidget* parent) : BasePanel("Pilha", about_stack_pt(), parent){
+StackPanel::StackPanel(QWidget* parent) : BasePanel(tr("Pilha"), about_stack_pt(), parent){
     set_kind("stack");
     build_controls(controls_bar);
 }
 
 void StackPanel::build_controls(QHBoxLayout* bar){
-    push_btn=new QPushButton("Empilhar",this);
-    pop_btn=new QPushButton("Desempilhar",this);
-    clear_btn=new QPushButton("Limpar",this);
+    push_btn=new QPushButton(tr("Empilhar"),this);
+    pop_btn=new QPushButton(tr("Desempilhar"),this);
+    clear_btn=new QPushButton(tr("Limpar"),this);
     bar->addWidget(push_btn);
     bar->addWidget(pop_btn);
     bar->addWidget(clear_btn);
@@ -60,7 +60,7 @@ void StackPanel::on_push(){
 
 void StackPanel::on_pop(){
     if(data.isEmpty()) return;
-    set_status("pop → "+data.back());
+    set_status(tr("pop → ")+data.back());
     data.pop_back();
     redraw();
 }

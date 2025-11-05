@@ -9,18 +9,18 @@
 #include <QGraphicsTextItem>
 #include <QCryptographicHash>
 
-HashPanel::HashPanel(QWidget* parent) : BasePanel("Tabela Hash", about_hash_pt(), parent), table(17){
+HashPanel::HashPanel(QWidget* parent) : BasePanel(tr("Tabela Hash"), about_hash_pt(), parent), table(17){
     set_kind("hash");
     build_controls(controls_bar);
 }
 
 void HashPanel::build_controls(QHBoxLayout* bar){
     input_key=new QLineEdit(this);
-    input_key->setPlaceholderText("Chave (texto)");
-    put_btn=new QPushButton("Inserir",this);
-    get_btn=new QPushButton("Buscar",this);
-    clear_btn=new QPushButton("Limpar",this);
-    bar->addWidget(new QLabel("Chave:",this));
+    input_key->setPlaceholderText(tr("Chave (texto)"));
+    put_btn=new QPushButton(tr("Inserir"),this);
+    get_btn=new QPushButton(tr("Buscar"),this);
+    clear_btn=new QPushButton(tr("Limpar"),this);
+    bar->addWidget(new QLabel(tr("Chave:"),this));
     bar->addWidget(input_key);
     bar->addWidget(put_btn);
     bar->addWidget(get_btn);
@@ -42,7 +42,7 @@ void HashPanel::redraw(int hi){
         bool hl=i==hi;
         auto fill=hl? color_node_fill_highlight: (table[i].used? QColor("#c6ffb3"):QColor("#2a2a2a"));
         auto* r=view->scene_ptr()->addRect(x,y+i*(h+gap),w,h,QPen(Qt::black),QBrush(fill));
-        QString label=QString::number(i)+" "+(table[i].used? QString("(%1 → %2)").arg(table[i].key).arg(table[i].val):"-");
+        QString label=QString::number(i)+" "+(table[i].used? QString("(%1 → %2)").arg(table[i].key).arg(table[i].val):QString("-"));
         auto* t=view->scene_ptr()->addText(label);
         t->setDefaultTextColor(Qt::black);
         t->setPos(x+6,y+i*(h+gap)+8);
@@ -70,7 +70,6 @@ void HashPanel::restore(const QJsonObject& o){
     redraw();
 }
 
-
 void HashPanel::on_put(){
     QString v=input_value->text().trimmed();
     QString k=input_key->text().trimmed();
@@ -83,7 +82,7 @@ void HashPanel::on_put(){
             hi=i; break;
         }
     }
-    set_status("put("+k+")");
+    set_status(tr("put(")+k+")");
     redraw(hi);
 }
 
@@ -96,7 +95,7 @@ void HashPanel::on_get(){
     for(int c=0;c<table.size();++c,i=(i+1)%table.size()){
         if(table[i].used&&table[i].key==k){ans=table[i].val;hi=i;break;}
     }
-    set_status(ans.isEmpty()? "Não encontrado":"Valor: "+ans);
+    set_status(ans.isEmpty()? tr("Não encontrado"):tr("Valor: ")+ans);
     redraw(hi);
 }
 

@@ -6,16 +6,16 @@
 #include "texts.h"
 #include <QGraphicsTextItem>
 
-DllPanel::DllPanel(QWidget* parent):BasePanel("Lista Duplamente Encadeada",about_dll_pt(),parent){
+DllPanel::DllPanel(QWidget* parent):BasePanel(tr("Lista Duplamente Encadeada"),about_dll_pt(),parent){
     set_kind("dll");
     build_controls(controls_bar);
 }
 
 void DllPanel::build_controls(QHBoxLayout* bar){
-    push_front_btn=new QPushButton("Inserir Início",this);
-    pop_back_btn=new QPushButton("Remover Fim",this);
-    remove_sel_btn=new QPushButton("Remover Selecionado",this);
-    clear_btn=new QPushButton("Limpar",this);
+    push_front_btn=new QPushButton(tr("Inserir Início"),this);
+    pop_back_btn=new QPushButton(tr("Remover Fim"),this);
+    remove_sel_btn=new QPushButton(tr("Remover Selecionado"),this);
+    clear_btn=new QPushButton(tr("Limpar"),this);
     bar->addWidget(push_front_btn);
     bar->addWidget(pop_back_btn);
     bar->addWidget(remove_sel_btn);
@@ -74,14 +74,14 @@ void DllPanel::on_push_front(){
 
 void DllPanel::on_pop_back(){
     if(data.isEmpty()) return;
-    set_status("pop_back → "+data.back());
+    set_status(tr("pop_back → ")+data.back());
     data.pop_back();
     redraw();
 }
 
 void DllPanel::on_remove_sel(){
     if(selected_index<0||selected_index>=data.size()) return;
-    set_status("remove_at → "+QString::number(selected_index));
+    set_status(tr("remove_at → ")+QString::number(selected_index));
     data.removeAt(selected_index);
     redraw();
 }

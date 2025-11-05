@@ -20,10 +20,10 @@ BasePanel::BasePanel(const QString& title_pt,const QString& about_pt,QWidget* pa
 
     export_lang=new QComboBox(this);
     export_lang->addItems(CodeExporter::languages_pt());
-    export_btn=new QPushButton("Exportar Código",this);
+    export_btn=new QPushButton(tr("Exportar Código"),this);
 
-    save_btn=new QPushButton("Salvar",this);
-    load_btn=new QPushButton("Carregar",this);
+    save_btn=new QPushButton(tr("Salvar"),this);
+    load_btn=new QPushButton(tr("Carregar"),this);
     saved_list=new QComboBox(this);
 
     header->addWidget(export_lang);
@@ -41,8 +41,8 @@ BasePanel::BasePanel(const QString& title_pt,const QString& about_pt,QWidget* pa
 
     controls_bar=new QHBoxLayout;
     input_value=new QLineEdit(this);
-    input_value->setPlaceholderText("Valor (pode ser texto)");
-    controls_bar->addWidget(new QLabel("Valor:",this));
+    input_value->setPlaceholderText(tr("Valor (pode ser texto)"));
+    controls_bar->addWidget(new QLabel(tr("Valor:"),this));
     controls_bar->addWidget(input_value);
     top_layout->addLayout(controls_bar);
 
@@ -52,13 +52,13 @@ BasePanel::BasePanel(const QString& title_pt,const QString& about_pt,QWidget* pa
     auto* bottom=new QWidget(this);
     auto* bottom_layout=new QVBoxLayout(bottom);
 
-    bottom_layout->addWidget(new QLabel("Sobre a estrutura",this));
+    bottom_layout->addWidget(new QLabel(tr("Sobre a estrutura"),this));
     about_box=new QPlainTextEdit(this);
     about_box->setPlainText(about_text);
     about_box->setReadOnly(true);
     bottom_layout->addWidget(about_box);
 
-    bottom_layout->addWidget(new QLabel("Saída",this));
+    bottom_layout->addWidget(new QLabel(tr("Saída"),this));
     output_box=new QPlainTextEdit(this);
     output_box->setReadOnly(true);
     bottom_layout->addWidget(output_box);
@@ -121,14 +121,14 @@ void BasePanel::export_snippet(const QString& structure_pt){
     QString lang=export_lang->currentText();
     QString code=CodeExporter::snippet_for(structure_pt,lang);
     QString ext=CodeExporter::language_ext(lang);
-    QString fn=QFileDialog::getSaveFileName(this,"Salvar exemplo",structure_pt+"."+ext,"*.*");
+    QString fn=QFileDialog::getSaveFileName(this,tr("Salvar exemplo"),structure_pt+"."+ext,"*.*");
     if(fn.isEmpty()) return;
     QFile f(fn);
     if(f.open(QIODevice::WriteOnly|QIODevice::Truncate)){
         QTextStream out(&f);
         out<<code;
         f.close();
-        set_status("Arquivo exportado: "+fn);
+        set_status(tr("Arquivo exportado: ")+fn);
     }
 }
 
@@ -143,23 +143,23 @@ void BasePanel::set_kind(const QString& k){
 }
 
 void BasePanel::on_save(){
-    QString name=QFileDialog::getSaveFileName(this,"Salvar como",StorageManager::base_dir()+"/"+structure_kind+"_nome.json","*.json");
+    QString name=QFileDialog::getSaveFileName(this,tr("Salvar como"),StorageManager::base_dir()+"/"+structure_kind+"_nome.json","*.json");
     if(name.isEmpty()) return;
     name=QFileInfo(name).baseName();
     QJsonObject obj=capture();
     if(StorageManager::save_json(structure_kind,name,obj)){
-        set_status("Salvo: "+name);
+        set_status(tr("Salvo: ")+name);
         set_kind(structure_kind);
-    }else set_status("Falha ao salvar");
+    }else set_status(tr("Falha ao salvar"));
 }
 
 void BasePanel::on_load(){
     QString name=saved_list->currentText();
     if(name.isEmpty()) return;
     QJsonObject obj=StorageManager::load_json(structure_kind,name);
-    if(obj.isEmpty()) set_status("Nada carregado");
+    if(obj.isEmpty()) set_status(tr("Nada carregado"));
     else{
         restore(obj);
-        set_status("Carregado: "+name);
+        set_status(tr("Carregado: ")+name);
     }
 }

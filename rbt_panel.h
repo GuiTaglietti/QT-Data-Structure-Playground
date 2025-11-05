@@ -1,7 +1,3 @@
-/** @author Guilherme Martinelli Taglietti
- *  @file   rbt_panel.h
- *  @brief  Red-Black Tree panel
- */
 #pragma once
 
 #include "base_panel.h"
@@ -29,6 +25,8 @@ private:
     QTimer anim_timer;
     QVector<Node*> anim_nodes;
     int anim_index=0;
+    bool anim_pending=false;
+    QString anim_pending_msg;
 
     void build_controls(QHBoxLayout* bar) override;
     void redraw(Node* flash=nullptr);

@@ -3,8 +3,10 @@
  *  @brief  Snippet exporter implementation
  */
 #include "code_exporter.h"
+#include <QObject>
 
 QStringList CodeExporter::languages_pt(){
+    // Nomes de linguagens permanecem universais; pode traduzir se quiser usando QObject::tr
     return {"C", "C++", "Java", "Python", "JavaScript"};
 }
 
@@ -17,7 +19,8 @@ QString CodeExporter::language_ext(const QString& lang_pt){
 }
 
 QString CodeExporter::snippet_for(const QString& s,const QString& l){
-    if(s=="Pilha"){
+    // Comparar com títulos traduzidos; isso permite funcionar em pt-BR, en-US, es-ES.
+    if(s==QObject::tr("Pilha")){
         if(l=="C") return c_stack();
         if(l=="C++") return cpp_stack();
         if(l=="Java") return java_stack();
@@ -25,7 +28,7 @@ QString CodeExporter::snippet_for(const QString& s,const QString& l){
         return js_stack();
     }
 
-    if(s=="Fila"){
+    if(s==QObject::tr("Fila")){
         if(l=="C") return c_queue();
         if(l=="C++") return cpp_queue();
         if(l=="Java") return java_queue();
@@ -33,7 +36,7 @@ QString CodeExporter::snippet_for(const QString& s,const QString& l){
         return js_queue();
     }
 
-    if(s=="Tabela Hash"){
+    if(s==QObject::tr("Tabela Hash")){
         if(l=="C") return c_hash();
         if(l=="C++") return cpp_hash();
         if(l=="Java") return java_hash();
@@ -41,7 +44,7 @@ QString CodeExporter::snippet_for(const QString& s,const QString& l){
         return js_hash();
     }
 
-    if(s=="Lista Encadeada"){
+    if(s==QObject::tr("Lista Encadeada")){
         if(l=="C") return c_sll();
         if(l=="C++") return cpp_sll();
         if(l=="Java") return java_sll();
@@ -49,7 +52,7 @@ QString CodeExporter::snippet_for(const QString& s,const QString& l){
         return js_sll();
     }
 
-    if(s=="Lista Duplamente Encadeada"){
+    if(s==QObject::tr("Lista Duplamente Encadeada")){
         if(l=="C") return c_dll();
         if(l=="C++") return cpp_dll();
         if(l=="Java") return java_dll();
@@ -57,7 +60,7 @@ QString CodeExporter::snippet_for(const QString& s,const QString& l){
         return js_dll();
     }
 
-    if(s=="Grafo"){
+    if(s==QObject::tr("Grafo")){
         if(l=="C") return c_graph();
         if(l=="C++") return cpp_graph();
         if(l=="Java") return java_graph();
@@ -65,7 +68,7 @@ QString CodeExporter::snippet_for(const QString& s,const QString& l){
         return js_graph();
     }
 
-    if(s=="Árvore BST"){
+    if(s==QObject::tr("Árvore BST")){
         if(l=="C") return c_bst();
         if(l=="C++") return cpp_bst();
         if(l=="Java") return java_bst();
@@ -73,7 +76,7 @@ QString CodeExporter::snippet_for(const QString& s,const QString& l){
         return js_bst();
     }
 
-    if(s=="Árvore Vermelho-Preto"){
+    if(s==QObject::tr("Árvore Vermelho-Preto")){
         if(l=="C") return c_rbt();
         if(l=="C++") return cpp_rbt();
         if(l=="Java") return java_rbt();
